@@ -1,10 +1,39 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.base_user import BaseUserManager
 from django.core.exceptions import ValidationError
 from cloudinary.models import CloudinaryField
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils import timezone
 import re
+
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self,email,password,**extra_fields):
+        email = self.normalize_email(email)
+        user = self.model(
+            email=email,
+            **extra_fields
+        )
+        user.set_password(password)
+        user.save()
+        
+        return user
+    
+    
+    def create_superuser(self,email,password,**extra_fields):
+        extra_fields.setdefault("is_staff",True)
+        extra_fields.setdefault("is_superuser",True)
+        
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("superuser has to have the is_staff being True")
+        
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("superuser has to have the is_superuser being True")
+        
+
+        return self.create_user(email=email,password=password,**extra_fields)
+
 
 
 def validateImage(image):
@@ -25,13 +54,18 @@ def validate_phone_number(value):
     
 class CustomUser(AbstractUser):
     
-    email=models.EmailField(unique=True)
+    email=models.EmailField(unique=True , max_length=80)
+    username = models.CharField(max_length=45)
+    date_of_birth = models.DateField(null=True)
     image = CloudinaryField('images',validators=[validateImage])
     phone = models.CharField(max_length=15 , validators=[validate_phone_number], unique=True)
     confirm_password = models.CharField(max_length=16)
-    date_joined = models.DateTimeField(default=timezone.now)
     
     # +20 01033022410
+    
+    objects = CustomUserManager()
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS= ['username']
     
     def clean(self):
         super().clean()
