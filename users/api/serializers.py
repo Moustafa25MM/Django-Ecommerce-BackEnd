@@ -19,7 +19,12 @@ class UserSerializer(serializers.ModelSerializer):
             'password':{'write_only':True},
             'confirm_password':{'write_only':True},
         }
+    
+    def create(self, validated_data):
         
+        validated_data.pop('user_permissions')
+        validated_data['is_active'] = True
+        return CustomUser.objects.create_user(**validated_data)
         
     def validate(self,data):
         if CustomUser.objects.filter(email=data['email']).exists():
