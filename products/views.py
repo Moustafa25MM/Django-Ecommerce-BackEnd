@@ -9,6 +9,7 @@ class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     
+    # Post Product
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -16,5 +17,17 @@ class ProductList(generics.ListCreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ProductDetail(generics.RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    
+    # Get Product
+    def retrieve(self, request, pk):
+        product = self.get_object()
+        serializer = self.get_serializer(product)
+        return Response(serializer.data)    
+    
 
 # Create your views here.
