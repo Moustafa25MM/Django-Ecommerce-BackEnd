@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +46,8 @@ INSTALLED_APPS = [
     'wishlist',
     'orders',
     'rest_framework',
+    'cloudinary',
+    'cloudinary_storage'
     
 ]
 
@@ -128,3 +133,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+cloudinary.config( 
+  cloud_name = "das9oh9bs", 
+  api_key = "649543211737858", 
+  api_secret = "Bz6GeXk4KuBOjMXCU4rkyR20A_U",
+)
