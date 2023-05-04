@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from cloudinary.models import CloudinaryField
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils import timezone
 import re
 
@@ -31,16 +32,24 @@ class CustomUser(AbstractUser):
     date_joined = models.DateTimeField(default=timezone.now)
     
     # +20 01033022410
-    # def clean(self):
-    #     super().clean()
-    #     if self.password != self.confirm_password:
-    #         raise ValidationError('Passwords do not match')
+    
+    def clean(self):
+        super().clean()
+        if self.password != self.confirm_password:
+            raise ValidationError('Passwords do not match')
     
     def __str__(self):
         return self.username
     
     
 
+class Address(models.Model):
+    city = models.CharField(validators=[MinLengthValidator(3)], max_length=50)
+    country = models.CharField(validators=[MinLengthValidator(3)], max_length=50)
+    street = models.CharField(validators=[MinLengthValidator(3)], max_length=50)
+    building_number = models.CharField(validators=[MinLengthValidator(3)], max_length=50)
+    user = models.ForeignKey(CustomUser , on_delete=models.CASCADE , related_name='address' , blank=True , null=True)
 
-
-# Create your models here.
+    
+    def __str__(self):
+        return f"{self.building_number} , {self.street} , {self.city} , {self.country}"
