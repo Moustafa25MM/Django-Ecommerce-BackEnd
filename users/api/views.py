@@ -1,7 +1,6 @@
 from django.shortcuts import render
-from api.serializers import Address, CustomUser
 from rest_framework import generics, status
-from api.serializers import AddressSerializer, UserSerializer
+from users.api.serializers import AddressSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny

@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.exceptions import ValidationError
-from cloudinary.models import CloudinaryField
+import cloudinary.api
+from cloudinary.models import CloudinaryField , CloudinaryResource 
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils import timezone
 import re
@@ -37,13 +38,24 @@ class CustomUserManager(BaseUserManager):
 
 
 def validateImage(image):
-    if image.size > 5 * 1024 * 1024 :
+    if not isinstance(image, CloudinaryResource):
+        # The image is not a Cloudinary resource, so we can't validate it
+        return
+    
+    info = cloudinary.api.resource(image.public_id)
+    file_size = info.get("bytes")
+    if not file_size:
+        raise ValidationError('Failed to get image size.')
+    
+    print(file_size)
+    if file_size > 5 * 1024 * 1024:
         raise ValidationError('Image size should be less than 5MB.')
     
-    file_extension = image.name.split('.')[-1].lower()
+    file_extension = image.format.lower()
     if file_extension not in ['png', 'jpg', 'jpeg']:
         raise ValidationError('Only PNG, JPG, and JPEG images are allowed.')
-
+    
+    
 def validate_phone_number(value):
     pattern = r'^(\+20\s)?(01)[012][0-9]{8}$'
     if not re.match(pattern, value):
@@ -56,7 +68,7 @@ class CustomUser(AbstractUser):
     
     email=models.EmailField(unique=True , max_length=80)
     username = models.CharField(max_length=45)
-    date_of_birth = models.DateField(null=True)
+    date_of_birth = models.DateField(null=True , blank=True)
     image = CloudinaryField('images',validators=[validateImage])
     phone = models.CharField(max_length=15 , validators=[validate_phone_number], unique=True)
     confirm_password = models.CharField(max_length=16)
