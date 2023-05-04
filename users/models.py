@@ -4,8 +4,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.core.exceptions import ValidationError
 import cloudinary.api
 from cloudinary.models import CloudinaryField , CloudinaryResource 
-from django.core.validators import MinLengthValidator, MaxLengthValidator
-from django.utils import timezone
+from django.core.validators import MinLengthValidator
 import re
 
 

@@ -14,6 +14,7 @@ from pathlib import Path
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import socket
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,7 +48,6 @@ INSTALLED_APPS = [
     'cart',
     'wishlist',
     'orders',
-    
 ]
 
 
@@ -146,3 +146,4 @@ cloudinary.config(
   api_key = "649543211737858", 
   api_secret = "Bz6GeXk4KuBOjMXCU4rkyR20A_U",
 )
+
