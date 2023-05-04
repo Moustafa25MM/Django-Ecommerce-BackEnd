@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import cloudinary
 import cloudinary.uploader
@@ -65,7 +66,18 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'ecommerce.urls'
 
 REST_FRAMEWORK = {
-    "NON_FIELD_ERRORS_KEY":"errors"
+    "NON_FIELD_ERRORS_KEY":"errors",
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=2),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "SIGNING_KEY": SECRET_KEY,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    # "Bearer <Token>"
 }
 
 TEMPLATES = [
