@@ -68,7 +68,7 @@ class CustomUser(AbstractUser):
     email=models.EmailField(unique=True , max_length=80)
     username = models.CharField(max_length=45)
     date_of_birth = models.DateField(null=True , blank=True)
-    image = CloudinaryField('images',validators=[validateImage])
+    # image = CloudinaryField('images',validators=[validateImage])
     phone = models.CharField(max_length=15 , validators=[validate_phone_number], unique=True)
     confirm_password = models.CharField(max_length=16)
     

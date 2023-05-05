@@ -2,6 +2,8 @@ from rest_framework import serializers
 from users.models import CustomUser , Address
 from django.core.exceptions import ValidationError
 from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model
+
 
 class AddressSerializer(serializers.ModelSerializer):
     
@@ -15,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ['email' , 'username' , 'password' , 'confirm_password' , 'image' ,'phone' ,'date_of_birth']
+        fields = ['email' , 'username' , 'password' , 'confirm_password'  ,'phone' ,'date_of_birth']
         extra_kwargs = {
             'password':{'write_only':True},
             'confirm_password':{'write_only':True},
@@ -41,3 +43,11 @@ class UserSerializer(serializers.ModelSerializer):
             raise ValidationError("Passwords don't match")
         
         return data    
+    
+    
+    def to_representation(self, instance):
+        if isinstance(instance, get_user_model()):
+            return super().to_representation(instance)
+        else:
+            # Handle anonymous user
+            return {'id': None, 'username': 'Anonymous', 'email': None}
