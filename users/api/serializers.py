@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from users.models import CustomUser , Address
 from django.core.exceptions import ValidationError
+from rest_framework.authtoken.models import Token
 
 class AddressSerializer(serializers.ModelSerializer):
     
@@ -22,7 +23,6 @@ class UserSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         
-        validated_data.pop('user_permissions')
         validated_data['is_active'] = True
         return CustomUser.objects.create_user(**validated_data)
         
