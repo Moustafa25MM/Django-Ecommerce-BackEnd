@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, status
-from users.api.serializers import Address, CustomUser
+from ..models import Address, CustomUser
 from users.api.serializers import AddressSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from ..tokens import create_jwt_pair_for_user
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view , permission_classes
 from django.contrib.auth import authenticate
 
 
@@ -91,3 +92,12 @@ class LoginView(APIView):
                    'auth':str(request.auth)}
         
         return Response(data=content , status=status.HTTP_200_OK)
+    
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserProfile(request):
+    user = request.user
+    serializer = UserSerializer(user , many=False)
+    return Response(serializer.data)
+    
