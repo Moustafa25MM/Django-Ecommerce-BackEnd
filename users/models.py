@@ -92,9 +92,10 @@ class Address(models.Model):
     city = models.CharField(validators=[MinLengthValidator(3)], max_length=50)
     country = models.CharField(validators=[MinLengthValidator(3)], max_length=50)
     street = models.CharField(validators=[MinLengthValidator(3)], max_length=50)
-    building_number = models.CharField(validators=[MinLengthValidator(3)], max_length=50)
-    user = models.ForeignKey(CustomUser , on_delete=models.CASCADE , related_name='address' , blank=True , null=True)
+    building_number = models.CharField(validators=[MinLengthValidator(1)], max_length=50)
+    user = models.ForeignKey(CustomUser , on_delete=models.CASCADE , related_name='addresses' , blank=True , null=True)
 
+    
     
     def __str__(self):
         return f"{self.building_number} , {self.street} , {self.city} , {self.country}"

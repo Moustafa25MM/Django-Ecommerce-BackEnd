@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from ..models import Address, CustomUser
-from users.api.serializers import AddressSerializer, UserSerializer
+from users.api.serializers import AddressSerializer, UserSerializer , UserUpdateSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
@@ -101,3 +101,21 @@ def getUserProfile(request):
     serializer = UserSerializer(user , many=False)
     return Response(serializer.data)
     
+
+class UserDetail(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+    def get_serializer_class(self):
+        if self.request.method == 'PATCH':
+            return UserUpdateSerializer
+        return self.serializer_class
+
+    def patch(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
