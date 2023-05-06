@@ -1,6 +1,6 @@
 from django.db import models
 from users.models import CustomUser
-
+from products.models import Product
 # Create your models here.
 
 class Order(models.Model):
@@ -17,4 +17,18 @@ class Order(models.Model):
     def __str__(self):
         return self.user.username+'__'+str(self.total_price)
 
+class OrderItems(models.Model):
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    
 
+    def __str__(self):
+        return f'{self.quantity} x {self.product.name}'
+
+    def get_item_price(self):
+        return self.quantity * self.price
+
+    def get_product_name(self):
+        return self.product.name
