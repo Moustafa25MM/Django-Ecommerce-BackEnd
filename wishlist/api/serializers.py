@@ -19,20 +19,11 @@ class WishListSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = validated_data['user']
-        wishlist, _ = WishList.objects.get_or_create(user=user)
+        wishlist, created = WishList.objects.get_or_create(user=user)
         return wishlist
 
     def update(self, instance, validated_data):
-        products = validated_data.pop('product', [])
-        for product in products:
-            product_id = product['id']
-            quantity = product['quantity']
-            if instance.product.filter(id=product_id).exists():
-                wishlist_item = instance.product.through.objects.get(product_id=product_id, wishlist_id=instance.id)
-                wishlist_item.quantity += quantity
-                wishlist_item.save()
-            else:
-                instance.product.add(product_id, through_defaults={'quantity': quantity})
-        instance.quantity = instance.product.through.objects.aggregate(models.Sum('quantity'))['quantity__sum']
+        instance.product.set(validated_data.get('product', instance.product.all()))
+        instance.quantity = validated_data.get('quantity', instance.quantity)
         instance.save()
         return instance
