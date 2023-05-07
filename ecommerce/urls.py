@@ -16,24 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path , include
-from products.views import ProductListByCategory ,ProductList , CategoryDetail , CategoryList , ProductDetail
-from rest_framework import routers
-
-
-
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    path('categories/', CategoryList.as_view(), name='category-list'),
-    path('categories/<int:pk>/', CategoryDetail.as_view(), name='category-detail'),
-    path('categories/<int:category_id>/products/', ProductListByCategory.as_view(), name='product-list-by-category'),
-    
-    path('products/', ProductList.as_view(), name='product-list'),
-    path('products/<int:pk>/', ProductDetail.as_view(), name='product-detail'),
-    
-
+    path("products/", include('products.urls')),
 
     path("carts/", include('cart.urls')),
     
@@ -42,5 +29,7 @@ urlpatterns = [
     path("orders/", include('orders.urls')),
     
     path('wishlist/',include('wishlist.api.urls')),
+
+
 ]
 
