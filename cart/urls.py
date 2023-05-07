@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import CartListCreateView, CartDetailView, CartItemCreateView, CartItemDetailView
+from .views import AddToCartView, UpdateCartView, CartView, DeleteCartItemView
+
 
 urlpatterns = [
-    path('', CartListCreateView.as_view(), name='cart-list'), #backend create this step
-    path('<int:pk>/', CartDetailView.as_view(), name='cart-detail'),
-    path('cartitems/', CartItemCreateView.as_view(), name='cartitem-create'),
-    path('cartitems/<int:pk>/', CartItemDetailView.as_view(), name='cartitem-detail'),
+    path('add-to-cart/', AddToCartView.as_view(), name='add_to_cart'),
+    path('update-cart/<int:pk>/', UpdateCartView.as_view(), name='update_cart'),
+    path('cart/<int:user>/', CartView.as_view(), name='cart'),
+    path('delete-cart-item/<int:pk>/', DeleteCartItemView.as_view(), name='delete_cart_item'),
 ]
