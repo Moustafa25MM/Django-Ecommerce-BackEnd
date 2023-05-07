@@ -24,6 +24,8 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self,email,password,**extra_fields):
         extra_fields.setdefault("is_staff",True)
         extra_fields.setdefault("is_superuser",True)
+        extra_fields.setdefault('is_active', True)
+
         
         if extra_fields.get("is_staff") is not True:
             raise ValueError("superuser has to have the is_staff being True")
@@ -68,11 +70,15 @@ class CustomUser(AbstractUser):
     email=models.EmailField(unique=True , max_length=80)
     username = models.CharField(max_length=45)
     date_of_birth = models.DateField(null=True , blank=True)
-    image = CloudinaryField('images',validators=[validateImage])
+    # image = CloudinaryField('images',validators=[validateImage])
     phone = models.CharField(max_length=15 , validators=[validate_phone_number], unique=True)
     confirm_password = models.CharField(max_length=16)
     
     # +20 01033022410
+    is_active = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
