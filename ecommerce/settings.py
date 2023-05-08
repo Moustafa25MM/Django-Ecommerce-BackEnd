@@ -147,6 +147,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STRIPE_SECRET_KEY = 'sk_test_51N5EzLFB7LMN2Ut7xOcCPl0wNbKlkJ1qjYRPvwJb2mm0J6pAXJOfeU45jXnOjPSyaxHpdEjH3W4YNqwvccETS4CL00HWqsguSW'
+STRIPE_WEBHOOK_SECRET = 'whsec_d7e99f95c90da8a23d7cfef5e9921ce10337251c80f5c1a0657a983859dc58a6'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -158,4 +160,3 @@ cloudinary.config(
   api_key = "649543211737858", 
   api_secret = "Bz6GeXk4KuBOjMXCU4rkyR20A_U",
 )
-

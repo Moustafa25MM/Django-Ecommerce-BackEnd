@@ -28,7 +28,7 @@ def validateImage(image):
 class Category(models.Model):
     name = models.CharField(max_length=30, validators=[MinLengthValidator(3)])
 
-    def str(self):
+    def __str__(self):
         return self.name
 
 class Product(models.Model):
@@ -41,5 +41,5 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE , related_name='product') 
 
 
-    def str(self):
+    def __str__(self):
         return self.name
