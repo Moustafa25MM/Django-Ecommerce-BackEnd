@@ -3,7 +3,7 @@ from .models import Product , Category
 from .serializers import ProductSerializer , CategorySerializer
 from rest_framework import generics
 from rest_framework.generics import ListAPIView
-
+from products.pagination import ProductPagination
 
 class CategoryList(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -30,6 +30,7 @@ class ProductListByCategory(ListAPIView):
 
 class ProductList(ListAPIView):
     serializer_class = ProductSerializer
+    pagination_class = ProductPagination
 
     def get_queryset(self):
         search_term = self.request.query_params.get('search')
