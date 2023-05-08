@@ -32,3 +32,15 @@ class OrderItems(models.Model):
 
     def get_product_name(self):
         return self.product.name
+    
+    
+class PaymentToken(models.Model):
+    Ptoken = models.CharField(max_length=255)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    status = models.BooleanField()
+    
+
+    def __str__(self):
+        return self.Ptoken
+
+
