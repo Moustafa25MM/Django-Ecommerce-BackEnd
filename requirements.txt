@@ -8,6 +8,7 @@ django-pdb==0.6.2
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 idna==3.4
+psycopg2-binary==2.9.6
 PyJWT==2.6.0
 pytz==2023.3
 requests==2.29.0
