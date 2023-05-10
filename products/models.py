@@ -36,7 +36,7 @@ class Product(models.Model):
     description = models.TextField(max_length=200 , validators=[MinLengthValidator(3)])
     price = models.DecimalField(max_digits=10, decimal_places=2 , validators=[MinValueValidator(0.01)])
     available_quantity = models.IntegerField(validators=[MinValueValidator(0)])
-    # image = CloudinaryField('images', validators=[validate_image_size, validate_image_extension])
+    image = CloudinaryField('images', validators=[validateImage])
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE , related_name='product') 
 

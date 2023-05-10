@@ -49,8 +49,8 @@ def validateImage(image):
         raise ValidationError('Failed to get image size.')
     
     print(file_size)
-    if file_size > 5 * 1024 * 1024:
-        raise ValidationError('Image size should be less than 5MB.')
+    if file_size > 2 * 1024 * 1024:
+        raise ValidationError('Image size should be less than 2MB.')
     
     file_extension = image.format.lower()
     if file_extension not in ['png', 'jpg', 'jpeg']:
@@ -70,7 +70,7 @@ class CustomUser(AbstractUser):
     email=models.EmailField(unique=True , max_length=80)
     username = models.CharField(max_length=45)
     date_of_birth = models.DateField(null=True , blank=True)
-    # image = CloudinaryField('images',validators=[validateImage])
+    image = CloudinaryField('images',validators=[validateImage])
     phone = models.CharField(max_length=15 , validators=[validate_phone_number], unique=True)
     confirm_password = models.CharField(max_length=16)
     

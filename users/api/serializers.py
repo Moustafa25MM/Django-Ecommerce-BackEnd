@@ -30,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['email' , 'username' , 'password' , 'confirm_password'  ,'phone' ,'date_of_birth' , 'addresses']
+        fields = ['email' , 'username' , 'password' , 'confirm_password' , 'image'  , 'phone' ,'date_of_birth' , 'addresses']
         extra_kwargs = {
             'password':{'write_only':True},
             'confirm_password':{'write_only':True},
@@ -68,14 +68,14 @@ class UserSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=False)
     phone=serializers.CharField(required=False)
-    # image=CloudinaryField()
+    image=CloudinaryField()
     password = serializers.CharField(required=False, write_only=True)
     confirm_password = serializers.CharField(required=False, write_only=True)
     addresses = AddressSerializer(many=True)
     
     class Meta:
         model = CustomUser
-        fields = ['email' , 'username' , 'password' , 'confirm_password'  ,'phone' ,'date_of_birth' , 'addresses']
+        fields = ['email' , 'username' , 'password' , 'confirm_password' , 'image' ,'phone' ,'date_of_birth' , 'addresses']
 
     def validate(self, attrs):
         if not any(attrs.values()):
