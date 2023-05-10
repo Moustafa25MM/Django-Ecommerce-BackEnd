@@ -1,11 +1,12 @@
 from django.db import models
-# from django.contrib.auth.models import User
 from products.models import Product
-from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
+from users.models import CustomUser
 
 class Cart(models.Model):
-    # user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE , related_name='cart')
+    products = models.ManyToManyField(Product, related_name='carts', through='CartItem')
+
     
     def __str__(self):
         return self.user.get_username()
@@ -13,7 +14,7 @@ class Cart(models.Model):
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(validators=[MinValueValidator(1)],default=1)
     date_added = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
