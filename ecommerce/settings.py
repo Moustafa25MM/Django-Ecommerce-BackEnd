@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+
 from datetime import timedelta
 from pathlib import Path
 import cloudinary
@@ -49,7 +50,7 @@ INSTALLED_APPS = [
     'cart',
     'wishlist',
     'orders'  ,
-     'corsheaders',
+    'corsheaders',
 ]
 
 
@@ -129,6 +130,7 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+
 AUTH_USER_MODEL = 'users.CustomUser'
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -177,3 +179,5 @@ cloudinary.config(
   api_key = "649543211737858", 
   api_secret = "Bz6GeXk4KuBOjMXCU4rkyR20A_U",
 )
+
+

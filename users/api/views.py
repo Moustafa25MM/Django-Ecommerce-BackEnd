@@ -21,39 +21,49 @@ class AddressListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
-        return Address.objects.filter(user=self.request.user)
+        return self.request.user.addresses.all()
     
     def perform_create(self, serializer):
-        serializer.save(user = self.request.user)
+        serializer.save(user=self.request.user)
+
 
 class AddressDetailsView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AddressSerializer
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
-        return Address.objects.filter(user=self.request.user)
+        return self.request.user.addresses.all()
     
     def get_object(self):
-        queryset = self.get_queryset()
-        user = self.request.user
-        id = self.kwargs['id']
-        address_object = get_object_or_404(queryset , id = id )
-        if address_object.user != user :
+        address_object = get_object_or_404(self.get_queryset(), id=self.kwargs['id'])
+        if address_object.user != self.request.user:
             self.permission_denied(self.request)
-            
         return address_object
+    
+    def perform_destroy(self, instance):
+        instance.user.addresses.remove(instance)
         
 
 class Registeration(generics.GenericAPIView):
     serializer_class = UserSerializer
-    permission_classes=[AllowAny]
+    permission_classes = [AllowAny]
     
     def post(self,request:Request):
         data = request.data
+        address_data = data.pop('addresses', None)
         serializer = self.serializer_class(data=data)
 
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
+            if address_data:
+                for address in address_data:
+                    Address.objects.create(
+                        user=user,
+                        city=address.get('city'),
+                        country=address.get('country'),
+                        street=address.get('street'),
+                        building_number=address.get('building_number')
+                    )
             response={
                 "message":"user created Successfully",
                 "data":serializer.data
