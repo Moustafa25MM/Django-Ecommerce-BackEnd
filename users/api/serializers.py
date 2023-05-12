@@ -54,6 +54,9 @@ class UserSerializer(serializers.ModelSerializer):
         if data['password'] != data['confirm_password']:
             raise ValidationError("Passwords don't match")
         
+        if len(data['password']) > 16 or len(data['confirm_password']) > 16:
+            raise ValidationError("Password should not be more than 16 characters")
+        
         return data    
     
     
@@ -76,15 +79,26 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['email' , 'username' , 'password' , 'confirm_password' , 'image' ,'phone' ,'date_of_birth' , 'addresses']
+        extra_kwargs = {
+        'password': {'write_only': True},
+        'confirm_password': {'write_only': True},
+    }
 
     def validate(self, attrs):
         if not any(attrs.values()):
             raise serializers.ValidationError("At least one field must be updated")
-        
+
         password = attrs.get('password')
         confirm_password = attrs.get('confirm_password')
-        if not password or not confirm_password or password != confirm_password:
-            raise serializers.ValidationError
+        if password and not confirm_password:
+            raise serializers.ValidationError("Please confirm your new password")
+
+        if password != confirm_password:
+            raise serializers.ValidationError("Passwords do not match")
+
+        if len(password) > 16 or len(confirm_password) > 16:
+            raise serializers.ValidationError("Password should not be more than 16 characters")
+
         return attrs
     
     def update(self, instance, validated_data):

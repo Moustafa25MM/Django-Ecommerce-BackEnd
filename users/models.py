@@ -72,7 +72,7 @@ class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True , blank=True)
     image = CloudinaryField('images',validators=[validateImage])
     phone = models.CharField(max_length=15 , validators=[validate_phone_number], unique=True)
-    confirm_password = models.CharField(max_length=16)
+    confirm_password = models.CharField()
     
     # +20 01033022410
     is_active = models.BooleanField(default=False)
