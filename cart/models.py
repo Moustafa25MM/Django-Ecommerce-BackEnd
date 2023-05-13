@@ -12,7 +12,7 @@ class Cart(models.Model):
         return self.user.get_username()
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE , related_name='cart_items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(validators=[MinValueValidator(1)],default=1)
     date_added = models.DateTimeField(auto_now_add=True)

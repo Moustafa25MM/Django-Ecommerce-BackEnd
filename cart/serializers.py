@@ -4,7 +4,7 @@ from products.serializers import ProductSerializer
 from django.core.validators import MinValueValidator
 
 class AddToCartSerializer(serializers.ModelSerializer):
-    quantity = serializers.IntegerField(validators=[MinValueValidator(1)])
+    quantity = serializers.IntegerField(validators=[MinValueValidator(1)] ,default =1)
 
     class Meta:
         model = CartItem
@@ -13,8 +13,8 @@ class AddToCartSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         product = validated_data['product']
         quantity = validated_data['quantity']
-        user = self.context.get('user')
-
+        user = validated_data.get('user')
+        
         cart, created = Cart.objects.get_or_create(user=user)
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
 
@@ -33,7 +33,7 @@ class UpdateCartSerializer(serializers.ModelSerializer):
         fields = ['product', 'quantity', 'date_added']
     
     def update(self, instance, validated_data):
-        action = self.context.get('action')
+        action = validated_data.get('action')
         if action not in ('INCREASE', 'DECREASE'):
             raise serializers.ValidationError({'error': "Action can only be 'INCREASE' or 'DECREASE'"})
         
@@ -47,12 +47,17 @@ class UpdateCartSerializer(serializers.ModelSerializer):
             instance.delete()
 
         return instance
-
+    
+class CartItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+    class Meta:
+        model = CartItem
+        fields = "__all__"
 
 class CartSerializer(serializers.ModelSerializer):
-    # cart_items = CartItemSerializer(many=True, read_only=True)
-    products = ProductSerializer(many = True)
+    cart_items = CartItemSerializer(many=True, read_only=True)
     class Meta:
         model = Cart
-        fields = ['id','products']
+        fields = ['id','cart_items']
         
+    
