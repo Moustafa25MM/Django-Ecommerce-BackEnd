@@ -21,27 +21,28 @@ class AddressListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
-        return self.request.user.addresses.all()
+        return Address.objects.filter(user = self.request.user)
     
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save(user = self.request.user)
+
 
 
 class AddressDetailsView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AddressSerializer
     permission_classes = [IsAuthenticated]
-    
+
     def get_queryset(self):
-        return self.request.user.addresses.all()
-    
+        return Address.objects.filter(user=self.request.user)
+
     def get_object(self):
-        address_object = get_object_or_404(self.get_queryset(), id=self.kwargs['id'])
-        if address_object.user != self.request.user:
-            self.permission_denied(self.request)
-        return address_object
-    
-    def perform_destroy(self, instance):
-        instance.user.addresses.remove(instance)
+        queryset = self.get_queryset()
+        address_id = self.kwargs["id"]
+        obj = get_object_or_404(queryset, id=address_id)
+        return obj
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
         
 
 class Registeration(generics.GenericAPIView):
@@ -118,6 +119,9 @@ class UserDetail(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+
+    
     def get_serializer_class(self):
         if self.request.method == 'PATCH':
             return UserUpdateSerializer

@@ -10,10 +10,12 @@ from django.contrib.auth.hashers import make_password
 
 
 class AddressSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source="user.id")
+
     class Meta:
         model = Address
-        fields = ['id', 'city', 'country', 'street', 'building_number']
-        read_only_fields = ['id']
+        fields = ['id', 'user' ,'city', 'country', 'street', 'building_number']
+        read_only_fields = ['user']
     
     
     def update(self, instance, validated_data):
@@ -59,13 +61,7 @@ class UserSerializer(serializers.ModelSerializer):
         
         return data    
     
-    
-    def to_representation(self, instance):
-        if isinstance(instance, get_user_model()):
-            return super().to_representation(instance)
-        else:
-            # Handle anonymous user
-            return {'id': None, 'username': 'Anonymous', 'email': None}
+
         
         
 class UserUpdateSerializer(serializers.ModelSerializer):
@@ -82,8 +78,14 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         extra_kwargs = {
         'password': {'write_only': True},
         'confirm_password': {'write_only': True},
-    }
-
+        }
+    
+    
+    def validate_email(self, value):
+        if CustomUser.objects.filter(email=value).exclude(id=self.instance.id).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+        return value
+        
     def validate(self, attrs):
         if not any(attrs.values()):
             raise serializers.ValidationError("At least one field must be updated")
@@ -122,15 +124,23 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         addresses_to_delete.delete()
 
         for address_data in addresses_data:
-            if 'id' in address_data:
-                address = Address.objects.get(id=address_data['id'])
-                address_serializer = AddressSerializer(instance=address, data=address_data)
-                address_serializer.is_valid(raise_exception=True)
-                address_serializer.save()
+            address_id = address_data.get('id', None)
+            if address_id:
+                try:
+                    address = Address.objects.get(id=address_id, user=instance)
+                    address_serializer = AddressSerializer(address, data=address_data)
+                    if address_serializer.is_valid():
+                        address_serializer.save()
+                    else:
+                        raise serializers.ValidationError(address_serializer.errors)
+                except Address.DoesNotExist:
+                    raise serializers.ValidationError(f"Address with id {address_id} does not exist.")
             else:
-                address_data['user'] = instance
                 address_serializer = AddressSerializer(data=address_data)
-                address_serializer.is_valid(raise_exception=True)
-                address_serializer.save()
+                if address_serializer.is_valid():
+                    address_serializer.save(user=instance)
+                else:
+                    raise serializers.ValidationError(address_serializer.errors)
+
 
         return instance

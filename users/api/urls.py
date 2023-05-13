@@ -1,5 +1,5 @@
 from django.urls import path
-from users.api.views import Registeration , LoginView , getUserProfile ,UserDetail
+from users.api.views import Registeration , LoginView , getUserProfile ,UserDetail , AddressListCreateView , AddressDetailsView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -15,5 +15,6 @@ urlpatterns = [
     path("jwt/verify/", TokenVerifyView.as_view(), name="jwt_verify"),
     path('', UserDetail.as_view(), name='user_detail'),
     path('<int:userId>/addresses/<int:addressId>', UserDetail.as_view(), name='user_detail'),
+    
 
 ]
