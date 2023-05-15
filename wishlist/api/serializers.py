@@ -1,29 +1,33 @@
 from rest_framework import serializers
-from ..models import WishList
+from wishlist.models import Wishlist
 from products.serializers import ProductSerializer
+from rest_framework.pagination import PageNumberPagination
 
 
-class WishListSerializer(serializers.ModelSerializer):
-    product_details = ProductSerializer(many=True, read_only=True)
+class ProductDetailsPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'size'
+    max_page_size = 100
+    
+class WishlistSerializer(serializers.ModelSerializer):
+    product_details = ProductSerializer(source='product', many=True, read_only=True)
+
 
     class Meta:
-        model = WishList
-        fields = ['id', 'user', 'product', 'quantity', 'product_details']
-        read_only_fields = ['id', 'user', 'product_details']
+        model = Wishlist
+        fields = ['id', 'user','product','product_details']
 
-    def validate_user(self, value):
-        user = self.context['request'].user
-        if value != user:
-            raise serializers.ValidationError('Cannot create or update wishlist for another user.')
-        return value
+class WishlistGetSerializer(serializers.ModelSerializer):
+    product_details = serializers.SerializerMethodField()
 
-    def create(self, validated_data):
-        user = validated_data['user']
-        wishlist, created = WishList.objects.get_or_create(user=user)
-        return wishlist
-
-    def update(self, instance, validated_data):
-        instance.product.set(validated_data.get('product', instance.product.all()))
-        instance.quantity = validated_data.get('quantity', instance.quantity)
-        instance.save()
-        return instance
+    def get_product_details(self, obj):
+        queryset = obj.product.all()
+        paginator = ProductDetailsPagination()
+        result_page = paginator.paginate_queryset(queryset, self.context['request'])
+        serializer = ProductSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data).data
+    
+    
+    class Meta:
+        model = Wishlist
+        fields = ['id', 'user', 'product_details']

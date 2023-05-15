@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import WishList
+from wishlist.models import Wishlist
 
 class WishListAdmin(admin.ModelAdmin):
-    list_display = ('user', 'product_list' , 'quantity')
+    list_display = ('user', 'product_list')
 
     def product_list(self, obj):
         return ", ".join([p.name for p in obj.product.all()])
 
-admin.site.register(WishList, WishListAdmin)
+admin.site.register(Wishlist, WishListAdmin)
