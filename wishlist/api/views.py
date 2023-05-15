@@ -56,12 +56,10 @@ class WishlistDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class UserWishlistList(generics.ListAPIView):
     serializer_class = WishlistGetSerializer
-    # pagination_class = WishlistPagination
+    permission_classes = [IsAuthenticated]
 
 
     def get_queryset(self):
-        # user_id = self.kwargs['user_id']
-        permission_classes = [IsAuthenticated]
         user= self.request.user
         if not user.is_authenticated:
             raise PermissionDenied(detail="You must be logged in to add to your wishlist.")

@@ -5,9 +5,9 @@ from rest_framework.pagination import PageNumberPagination
 
 
 class ProductDetailsPagination(PageNumberPagination):
-    page_size = 10
+    page_size = 6
     page_size_query_param = 'size'
-    max_page_size = 100
+    max_page_size = 10
     
 class WishlistSerializer(serializers.ModelSerializer):
     product_details = ProductSerializer(source='product', many=True, read_only=True)
