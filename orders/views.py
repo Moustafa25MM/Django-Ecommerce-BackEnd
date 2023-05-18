@@ -76,7 +76,11 @@ class CreateCheckout(APIView):
             pToken.save()
         except AuthenticationError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return redirect(checkout_session.url , code=303)
+        # return redirect(checkout_session.url , code=303)
+        return Response({'url': checkout_session.url})
+
+
+
 
 # class WebHook(APIView):
 #     def post(self , request):
@@ -153,7 +157,8 @@ class OrdertCreate(APIView):
         cart_items.delete()
         
         serializer = OrderSerializers(order)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return redirect('http://localhost:3000/orders/')
 
 
 
