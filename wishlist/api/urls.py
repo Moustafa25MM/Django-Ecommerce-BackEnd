@@ -1,10 +1,10 @@
 from django.urls import path
-from wishlist.api.views import UserWishlistItemCreate,WishListView,UserWishlistDelete
+from .views import WishlistList, WishlistDetail, WishlistItemDelete,UserWishlistList
 
 urlpatterns = [
-    path('list', WishListView.as_view(), name='user-wishlist-list'),
-    path('delete', UserWishlistDelete.as_view(), name='user-wishlist-list'),
-    path('create', UserWishlistItemCreate.as_view(), name='create-wishlist'),
-    
-]   
+    path('', WishlistList.as_view(), name='wishlist-detail'),
+    path('<int:pk>/', WishlistDetail.as_view(), name='wishlist-create'),
+    path('user', UserWishlistList.as_view(), name='user-wishlist-list'),
 
+    path('product/<int:id>/', WishlistItemDelete.as_view(), name='wishlist-update'),
+]
