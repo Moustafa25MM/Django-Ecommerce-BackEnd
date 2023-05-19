@@ -17,6 +17,7 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 import socket
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,9 +30,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-&1e_tzy2c90rtqn*-qq2ci3!so24rv@963*qzynrloh74kj*!l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -115,18 +116,21 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'btRBctmRy8qTQWtQCtkb',
-        'HOST': 'containers-us-west-177.railway.app',
-        'PORT': '5488',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         #'ENGINE': 'django.db.backends.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'railway',
+#         'USER': 'postgres',
+#         'PASSWORD': 'btRBctmRy8qTQWtQCtkb',
+#         'HOST': 'containers-us-west-177.railway.app',
+#         'PORT': '5488',
+#     }
+# }
 
+DATABASES = {
+    'default': dj_database_url.parse('postgres://e_commerce_sd5h_user:jUZFwLIzqhIVZdktsLtTz1ZmUH7JQy0I@dpg-chjtpi3hp8u4bdp2ttfg-a.oregon-postgres.render.com/e_commerce_sd5h')
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
