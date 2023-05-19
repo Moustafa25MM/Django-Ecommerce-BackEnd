@@ -3,13 +3,17 @@ from .models import Product , Category
 from .serializers import ProductSerializer , CategorySerializer
 from rest_framework import generics
 from rest_framework.generics import ListAPIView
-from products.pagination import ProductPagination
+from products.pagination import ProductPagination , CategoryPagination
 from rest_framework.permissions import AllowAny
 
 class CategoryList(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
-    queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    pagination_class = CategoryPagination
+    
+    def get_queryset(self):
+        return Category.objects.all()
+    
 
 class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [AllowAny]
@@ -29,6 +33,7 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
 class ProductListByCategory(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = ProductSerializer
+    pagination_class = ProductPagination
 
     def get_queryset(self):
         category_id = self.kwargs['category_id']
@@ -41,7 +46,7 @@ class ProductList(ListAPIView):
 
     def get_queryset(self):
         search_term = self.request.query_params.get('search')
-        print('Search term:', search_term)
+        # print('Search term:', search_term)
         if search_term:
             queryset = Product.objects.filter(name__icontains=search_term) | Product.objects.filter(description__icontains=search_term)
             print('Filtered queryset:', queryset)
