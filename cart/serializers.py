@@ -8,7 +8,7 @@ class AddToCartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartItem
-        fields = ['product', 'quantity', 'date_added']
+        fields = ['id','product', 'quantity', 'date_added']
 
     def create(self, validated_data):
         product = validated_data['product']
