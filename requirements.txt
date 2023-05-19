@@ -15,7 +15,6 @@ dbus-python==1.2.18
 defer==1.0.6
 distro==1.7.0
 distro-info==1.1+ubuntu1
-dj-database-url==2.0.0
 Django==4.2.1
 django-cloudinary-storage==0.3.0
 django-cors-headers==3.14.0
