@@ -8,6 +8,8 @@ from django.core.validators import MinLengthValidator
 import re
 
 
+
+
 class CustomUserManager(BaseUserManager):
     def create_user(self,email,password,**extra_fields):
         email = self.normalize_email(email)
@@ -84,6 +86,8 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS= ['username']
     
+
+            
     def clean(self):
         super().clean()
         if self.password != self.confirm_password:
@@ -92,7 +96,8 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
     
-    
+
+
 
 class Address(models.Model):
     city = models.CharField(validators=[MinLengthValidator(3)], max_length=50)

@@ -43,7 +43,7 @@ class ProductList(ListAPIView):
         search_term = self.request.query_params.get('search')
         print('Search term:', search_term)
         if search_term:
-            queryset = Product.objects.filter(nameicontains=search_term) | Product.objects.filter(description__icontains=search_term)
+            queryset = Product.objects.filter(name__icontains=search_term) | Product.objects.filter(description__icontains=search_term)
             print('Filtered queryset:', queryset)
             return queryset
         else:
