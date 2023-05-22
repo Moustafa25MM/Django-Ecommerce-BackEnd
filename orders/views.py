@@ -158,7 +158,7 @@ class OrdertCreate(APIView):
         
         serializer = OrderSerializers(order)
         # return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return redirect('https://ciseco-e.netlify.app/orders')
+        return redirect('http://localhost:3000/orders')
 
 
 
